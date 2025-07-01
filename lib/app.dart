@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskManager extends StatelessWidget {

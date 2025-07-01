@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/email_verification_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -116,7 +117,9 @@ class _SignInScreenState extends State<SignInScreen> {
       // TODO:SignIN with API
     }
   }
-  void _onTapForgotPasswordButton() {}
+  void _onTapForgotPasswordButton() {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailVerificationScreen()));
+  }
   void _onTapSignUpButton() {}
 
   @override
