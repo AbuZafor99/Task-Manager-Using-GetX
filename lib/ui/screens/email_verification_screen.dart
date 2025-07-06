@@ -16,7 +16,7 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  final TextEditingController _emailForVerification=TextEditingController();
+  final TextEditingController _emailForVerificationController=TextEditingController();
 
 
   @override
@@ -42,7 +42,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   SizedBox(height: 20,),
                   TextFormField(
-                    controller: _emailForVerification,
+                    controller: _emailForVerificationController,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
@@ -92,5 +92,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   void _navigateToSignInPage(){
     Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInScreen()));
+  }
+  @override
+  void dispose() {
+    _emailForVerificationController.dispose();
+    super.dispose();
   }
 }

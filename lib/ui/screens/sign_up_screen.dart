@@ -3,20 +3,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
-import 'package:task_manager/ui/screens/sign_up_screen.dart';
+import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
-  static const String name='/sign-in';
+  static const String name='/sign-up';
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _firstNameTEController = TextEditingController();
+  final TextEditingController _lastNameTEController = TextEditingController();
+  final TextEditingController _phoneNumberTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -35,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 children: [
                   SizedBox(height: 80),
                   Text(
-                    "Get Started With",
+                    "Join With Us",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   SizedBox(height: 24),
@@ -54,6 +57,50 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   SizedBox(height: 8),
                   TextFormField(
+                    controller: _firstNameTEController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(hintText: 'First Name'),
+                    // autovalidateMode: AutovalidateMode.always,
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return "Enter your first name.";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: _lastNameTEController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(hintText: 'Last Name'),
+                    // autovalidateMode: AutovalidateMode.always,
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return "Enter your last name.";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: _phoneNumberTEController,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(hintText: 'Phone'),
+                    // autovalidateMode: AutovalidateMode.always,
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Number is required.";
+                      }
+                      if (value.trim().length < 11) {
+                        return "Enter a valid number (at least 11 digits).";
+                      }
+                      return null;
+                    },
+
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
                     controller: _passwordTEController,
                     obscureText: true,
                     decoration: InputDecoration(hintText: 'Password'),
@@ -67,24 +114,16 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: _onTapSignInButton,
+                    onPressed: _onTapSignUpButton,
                     child: Icon(Icons.arrow_circle_right_outlined),
                   ),
                   SizedBox(height: 32),
 
                   Center(
-                    child: Column(
-                      children: [
-                        TextButton(
-                          onPressed: _onTapForgotPasswordButton,
-                          child: Text(
-                            "Forgot Password?",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
+                    child:
                         RichText(
                           text: TextSpan(
-                            text: "Don't have an account? ",
+                            text: "Have an account? ",
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
@@ -92,19 +131,17 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             children: [
                               TextSpan(
-                                text: 'Sign Up',
+                                text: 'Sign In',
                                 style: TextStyle(
                                   color: Colors.green,
                                   fontWeight: FontWeight.w700,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = _onTapSignUpButton,
+                                  ..onTap = _onTapSignInButton,
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -115,21 +152,22 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _onTapSignInButton() {
+  void _onTapSignUpButton() {
     if(_formKey.currentState!.validate()){
       // TODO:SignIN with API
     }
   }
-  void _onTapForgotPasswordButton() {
-    Navigator.pushReplacementNamed(context, EmailVerificationScreen.name);
-  }
-  void _onTapSignUpButton() {
-    Navigator.pushReplacementNamed(context, SignUpScreen.name);
+
+  void _onTapSignInButton() {
+    Navigator.pop(context);
   }
 
   @override
   void dispose() {
     _passwordTEController.dispose();
+    _firstNameTEController.dispose();
+    _phoneNumberTEController.dispose();
+    _lastNameTEController.dispose();
     _emailTEController.dispose();
     super.dispose();
   }

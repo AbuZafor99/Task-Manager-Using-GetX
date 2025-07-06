@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
+import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskManager extends StatelessWidget {
@@ -62,6 +63,7 @@ class TaskManager extends StatelessWidget {
         SplashScreen.name:(context)=>SplashScreen(),
         SignInScreen.name:(context)=>SignInScreen(),
         EmailVerificationScreen.name:(context)=>EmailVerificationScreen(),
+        SignUpScreen.name:(context)=>SignUpScreen()
       },
     );
   }
