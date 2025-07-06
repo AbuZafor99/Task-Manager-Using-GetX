@@ -8,6 +8,8 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
+  static const String name='/sign-in';
+
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
@@ -118,7 +120,7 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
   void _onTapForgotPasswordButton() {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailVerificationScreen()));
+    Navigator.pushReplacementNamed(context, EmailVerificationScreen.name);
   }
   void _onTapSignUpButton() {}
 

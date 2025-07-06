@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
+import 'package:task_manager/ui/screens/pin_verification_screen.dart';
+import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskManager extends StatelessWidget {
@@ -55,7 +57,12 @@ class TaskManager extends StatelessWidget {
         )
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      initialRoute: '/',
+      routes: {
+        SplashScreen.name:(context)=>SplashScreen(),
+        SignInScreen.name:(context)=>SignInScreen(),
+        EmailVerificationScreen.name:(context)=>EmailVerificationScreen(),
+      },
     );
   }
 }

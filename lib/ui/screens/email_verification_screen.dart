@@ -8,6 +8,8 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
 
+  static const String name='/email_verify_screen';
+
   @override
   State<EmailVerificationScreen> createState() =>
       _EmailVerificationScreenState();
@@ -15,7 +17,6 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailForVerification=TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
   @override
@@ -26,8 +27,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -44,6 +43,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   SizedBox(height: 20,),
                   TextFormField(
                     controller: _emailForVerification,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       hintText: "Email",
