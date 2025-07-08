@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
@@ -58,7 +59,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   SizedBox(height: 20,),
                   ElevatedButton(
-                      onPressed: (){}, child: Icon(Icons.arrow_circle_right_outlined)
+                      onPressed: _emailSubmitOnButtonClick,
+                      child: Icon(Icons.arrow_circle_right_outlined)
                   ),
                   SizedBox(height: 15,),
                   Center(
@@ -91,7 +93,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _navigateToSignInPage(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInScreen()));
+    Navigator.pushReplacementNamed(context, SignInScreen.name);
+  }
+  void _emailSubmitOnButtonClick(){
+    Navigator.pushReplacementNamed(context, PinVerificationScreen.name);
   }
   @override
   void dispose() {
