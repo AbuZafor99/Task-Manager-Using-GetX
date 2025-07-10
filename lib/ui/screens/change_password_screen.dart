@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import '../widgets/screen_background.dart';
 
@@ -108,7 +109,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     Navigator.pushReplacementNamed(context, SignInScreen.name);
   }
   void _confirmPasswordOnClick(){
-    Navigator.pushReplacementNamed(context, SignInScreen.name);
+    Navigator.pushNamedAndRemoveUntil(context, MainNavBarHolderScreen.name, (predicate) => false);
   }
   @override
   void dispose() {
