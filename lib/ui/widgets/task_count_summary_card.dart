@@ -13,8 +13,7 @@ class TaskCounrtSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body:Card(
+    return Card(
       elevation: 0,
       color: Colors.white,
       child: Padding(
@@ -27,7 +26,6 @@ class TaskCounrtSummaryCard extends StatelessWidget {
           ],
         ),
       ),
-    )
     );
   }
 }
