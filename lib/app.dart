@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/change_password_screen.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
@@ -68,7 +69,8 @@ class TaskManager extends StatelessWidget {
         SignUpScreen.name:(context)=>SignUpScreen(),
         PinVerificationScreen.name:(context)=>PinVerificationScreen(),
         ChangePasswordScreen.name:(context)=>ChangePasswordScreen(),
-        MainNavBarHolderScreen.name:(context)=>MainNavBarHolderScreen()
+        MainNavBarHolderScreen.name:(context)=>MainNavBarHolderScreen(),
+        AddNewTaskScreen.name:(context)=>AddNewTaskScreen()
       },
     );
   }
