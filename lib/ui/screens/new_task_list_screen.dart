@@ -35,7 +35,9 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return TaskCard();
+                  return TaskCard(
+                    taskType: TaskType.tNew,
+                  );
                 },
               ),
             ),
