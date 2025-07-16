@@ -169,7 +169,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             Text(
               selectedImage == null ? "Select Image" : selectedImage!.name,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
