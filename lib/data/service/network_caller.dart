@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
+import '../../ui/controllers/auth_controller.dart';
+
+
 class NetworkResponse {
   final bool isSuccess;
   final int statusCode;
@@ -17,26 +20,25 @@ class NetworkResponse {
 }
 
 class NetworkCaller {
-  static const String _customErrorMessage = "Something went wrong";
+  static const String _defaultErrorMessage = 'Something went wrong';
 
   static Future<NetworkResponse> getRequest({required String url}) async {
     try {
       Uri uri = Uri.parse(url);
       Response response = await get(uri);
-
       if (response.statusCode == 200) {
-        final decodeJson = jsonDecode(response.body);
+        final decodedJson = jsonDecode(response.body);
         return NetworkResponse(
           isSuccess: true,
           statusCode: response.statusCode,
-          body: decodeJson,
+          body: decodedJson,
         );
       } else {
-        final decodeJson = jsonDecode(response.body);
+        final decodedJson = jsonDecode(response.body);
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
-          errorMessage: decodeJson['data'] ?? _customErrorMessage,
+          errorMessage: decodedJson['data'] ?? _defaultErrorMessage,
         );
       }
     } catch (e) {
@@ -48,33 +50,29 @@ class NetworkCaller {
     }
   }
 
-  static Future<NetworkResponse> postRequest({
-    required String url,
-    Map<String, String>? body,
-  }) async {
+  static Future<NetworkResponse> postRequest({required String url, Map<String, String>? body}) async {
     try {
       Uri uri = Uri.parse(url);
       Response response = await post(
-          uri,
-          headers: {
-            'content-type':"application/json"
-          },
-          body: jsonEncode(body)
+        uri,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: jsonEncode(body),
       );
-
       if (response.statusCode == 200) {
-        final decodeJson = jsonDecode(response.body);
+        final decodedJson = jsonDecode(response.body);
         return NetworkResponse(
           isSuccess: true,
           statusCode: response.statusCode,
-          body: decodeJson,
+          body: decodedJson,
         );
       } else {
-        final decodeJson = jsonDecode(response.body);
+        final decodedJson = jsonDecode(response.body);
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
-          errorMessage: decodeJson['data'] ?? _customErrorMessage,
+          errorMessage: decodedJson['data'] ?? _defaultErrorMessage,
         );
       }
     } catch (e) {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
@@ -56,7 +57,8 @@ class _TMAppBarState extends State<TMAppBar> {
     );
   }
 
-  void _onTapLogoutButton(){
+  void _onTapLogoutButton()async{
+    await AuthController.clearData();
     Navigator.pushNamedAndRemoveUntil(context, SignInScreen.name, (predicate)=>false);
   }
 

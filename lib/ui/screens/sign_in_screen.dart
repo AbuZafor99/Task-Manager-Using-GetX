@@ -129,30 +129,34 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _onTapSignInButton() {
     if (_formKey.currentState!.validate()) {
-      _signUp();
+      _signIn();
     }
   }
 
-  Future<void> _signUp() async {
+  Future<void> _signIn() async {
     _signInProgress = true;
     setState(() {});
+
     Map<String, String> requestBody = {
       "email": _emailTEController.text.trim(),
       "password": _passwordTEController.text,
     };
+
     NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.loginUrl,
-      body: requestBody
+        url: Urls.loginUrl, body: requestBody
     );
-    if(response.isSuccess){
-      UserModel userModel=UserModel.fromJson(response.body!['data']);
-      String token=response.body!['token'];
+
+
+    if (response.isSuccess) {
+      UserModel userModel = UserModel.fromJson(response.body!['data']);
+      String token = response.body!['token'];
 
       await AuthController.saveUserData(userModel, token);
 
-      Navigator.pushNamedAndRemoveUntil(context, MainNavBarHolderScreen.name, (predicate)=>false);
-    }else{
-      _signInProgress=false;
+      Navigator.pushNamedAndRemoveUntil(
+          context, MainNavBarHolderScreen.name, (predicate) => false);
+    }else {
+      _signInProgress = false;
       setState(() {});
       showSnackBarMessage(context, response.errorMessage!);
     }
