@@ -32,7 +32,7 @@ class _TMAppBarState extends State<TMAppBar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Abu Zafor",
+                    AuthController.userModel!.firstName+' '+AuthController.userModel!.lastName,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
@@ -40,7 +40,7 @@ class _TMAppBarState extends State<TMAppBar> {
                     ),
                   ),
                   Text(
-                    "abuzafor@gmail.com",
+                    AuthController.userModel!.email,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white,
