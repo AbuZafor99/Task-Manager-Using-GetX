@@ -2,14 +2,19 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/urls.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
+import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
+import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snacksbar_message.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
-  static const String name='/sign-in';
+  static const String name = '/sign-in';
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -19,6 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _signInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +51,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     decoration: InputDecoration(hintText: 'Email'),
                     // autovalidateMode: AutovalidateMode.always,
                     validator: (String? value) {
-                      String email=value??"";
-                      if (EmailValidator.validate(email)==false) {
+                      String email = value ?? "";
+                      if (EmailValidator.validate(email) == false) {
                         return "Enter a valid Email.";
                       }
                       return null;
@@ -58,17 +64,21 @@ class _SignInScreenState extends State<SignInScreen> {
                     obscureText: true,
                     decoration: InputDecoration(hintText: 'Password'),
                     // autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (String? value){
-                      if((value?.length??0)<=6){
+                    validator: (String? value) {
+                      if ((value?.length ?? 0) <= 6) {
                         return "Your password length must be 7 digit";
                       }
                       return null;
                     },
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSignInButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _signInProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSignInButton,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                   SizedBox(height: 32),
 
@@ -116,15 +126,37 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _onTapSignInButton() {
-    if(_formKey.currentState!.validate()){
-      // TODO:SignIN with API
+    if (_formKey.currentState!.validate()) {
+      _signUp();
     }
   }
-  void _onTapForgotPasswordButton() {
-    Navigator.pushReplacementNamed(context, EmailVerificationScreen.name);
+
+  Future<void> _signUp() async {
+    _signInProgress = true;
+    setState(() {});
+    Map<String, String> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.loginUrl,
+      body: requestBody
+    );
+    if(response.isSuccess){
+      Navigator.pushNamedAndRemoveUntil(context, MainNavBarHolderScreen.name, (predicate)=>false);
+    }else{
+      _signInProgress=false;
+      setState(() {});
+      showSnackBarMessage(context, response.errorMessage!);
+    }
   }
+
+  void _onTapForgotPasswordButton() {
+    Navigator.pushNamed(context, EmailVerificationScreen.name);
+  }
+
   void _onTapSignUpButton() {
-    Navigator.pushReplacementNamed(context, SignUpScreen.name);
+    Navigator.pushNamed(context, SignUpScreen.name);
   }
 
   @override
