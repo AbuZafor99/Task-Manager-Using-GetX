@@ -7,7 +7,7 @@ Absolutely! Here's your **complete and corrected `README.md`** with the fixed `P
 
 A cross-platform task management app built using Flutter that allows users to create, manage, and organize personal tasks with secure authentication, categorized task views, and profile management.
 
-> 🚀 [Live Repository](https://github.com/AbuZafor99/Task-Manager-Flutter)
+> 🚀 [Live Repository](https://github.com/AbuZafor99/Task-Manager-Using-GetX)
 
 ---
 
