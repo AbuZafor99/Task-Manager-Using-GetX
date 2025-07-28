@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/controller_binder.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/change_password_screen.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
@@ -15,7 +17,7 @@ class TaskManager extends StatelessWidget {
   static  GlobalKey<NavigatorState> navigator=GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: navigator,
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
@@ -75,6 +77,7 @@ class TaskManager extends StatelessWidget {
         AddNewTaskScreen.name:(context)=>AddNewTaskScreen(),
         UpdateProfileScreen.name:(context)=>UpdateProfileScreen()
       },
+      initialBinding: ControllerBinder(),
     );
   }
 }
