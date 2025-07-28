@@ -30,16 +30,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ImagePicker imagePicker = ImagePicker();
-  XFile? selectedImage;
-  bool _updateProfileInProgress=false;
-
+  XFile? _selectedImage;
+  bool _updateProfileInProgress = false;
 
   @override
   void initState() {
-    _emailTEController.text=AuthController.userModel?.email??"";
-    _firstNameTEController.text=AuthController.userModel?.firstName??"";
-    _lastNameTEController.text=AuthController.userModel?.lastName??"";
-    _phoneNumberTEController.text=AuthController.userModel?.mobile??"";
+    _emailTEController.text = AuthController.userModel?.email ?? "";
+    _firstNameTEController.text = AuthController.userModel?.firstName ?? "";
+    _lastNameTEController.text = AuthController.userModel?.lastName ?? "";
+    _phoneNumberTEController.text = AuthController.userModel?.mobile ?? "";
     super.initState();
   }
 
@@ -123,15 +122,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     // autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (String? value) {
                       int length = value?.length ?? 0;
-                      if(length>0 && length <=6){
+                      if (length > 0 && length <= 6) {
                         return "Enter a password more then 6 letters.";
                       }
                       return null;
-                    }
+                    },
                   ),
                   SizedBox(height: 16),
                   Visibility(
-                    visible: _updateProfileInProgress==false,
+                    visible: _updateProfileInProgress == false,
                     replacement: CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
                       onPressed: _onTapSignUpButton,
@@ -180,11 +179,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             ),
             const SizedBox(width: 8),
             Text(
-              selectedImage == null ? "Select Image" : selectedImage!.name,
+              _selectedImage == null ? "Select Image" : _selectedImage!.name,
               maxLines: 1,
-              style: TextStyle(
-                overflow: TextOverflow.ellipsis,
-              ),
+              style: TextStyle(overflow: TextOverflow.ellipsis),
             ),
           ],
         ),
@@ -197,7 +194,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       source: ImageSource.gallery,
     );
     if (pickedImage != null) {
-      selectedImage = pickedImage;
+      _selectedImage = pickedImage;
       setState(() {});
     }
   }
@@ -208,46 +205,48 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-
-  Future<void>_updateProfile()async{
-    _updateProfileInProgress=true;
-    if(mounted){
+  Future<void> _updateProfile() async {
+    _updateProfileInProgress = true;
+    if (mounted) {
       setState(() {});
     }
-    Map<String,String> requestBody={
-      "email":_emailTEController.text,
-      "firstName":_firstNameTEController.text.trim(),
-      "lastName":_lastNameTEController.text.trim(),
-      "mobile":_phoneNumberTEController.text.trim(),
-  };
-    if(_passwordTEController.text.isNotEmpty){
-      requestBody["password"]=_passwordTEController.text;
+
+    Uint8List? imageBytes;
+
+    Map<String, String> requestBody = {
+      "email": _emailTEController.text,
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _phoneNumberTEController.text.trim(),
+    };
+    if (_passwordTEController.text.isNotEmpty) {
+      requestBody['password'] = _passwordTEController.text;
     }
-    if(selectedImage!=null){
-      Uint8List imageBytes= await selectedImage!.readAsBytes();
-      requestBody["photo"]=base64Encode(imageBytes);
+    if (_selectedImage != null) {
+      imageBytes = await _selectedImage!.readAsBytes();
+      requestBody['photo'] = base64Encode(imageBytes);
     }
 
-    NetworkResponse response = await NetworkCaller.postRequest(url: Urls.updateProfile,body: requestBody);
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.updateProfile,
+      body: requestBody,
+    );
 
-
-    _updateProfileInProgress=false;
-    if(mounted){
+    _updateProfileInProgress = false;
+    if (mounted) {
       setState(() {});
     }
-    if(response.isSuccess){
+    if (response.isSuccess) {
       _passwordTEController.clear();
 
-      if(mounted){
+      if (mounted) {
         showSnackBarMessage(context, "Profile Updated");
       }
-    }
-    else{
-      if(mounted){
-        showSnackBarMessage(context,response.errorMessage!);
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
       }
     }
-
   }
 
   void _onTapSignInButton() {

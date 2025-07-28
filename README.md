@@ -15,7 +15,10 @@ A cross-platform task management app built using Flutter that allows users to cr
 
 ### 🔐 Authentication
 - User Sign Up, Sign In
-- Password reset via email & PIN
+- **Forgot Password with Email Recovery**
+  - Send recovery email to registered email address
+  - Verify 6-digit OTP sent to email
+  - Reset password with new secure password
 - Secure session storage with token-based auth
 
 ### 📋 Task Management
@@ -87,6 +90,9 @@ flutter run
 | `/Registration` | Register new users |
 | `/Login`        | Login users        |
 | `/createTask`   | Add new task       |
+| `/RecoverVerifyEmail/{email}` | Send recovery email |
+| `/RecoverVerifyOtp/{email}/{otp}` | Verify OTP for password reset |
+| `/RecoverResetPassword` | Reset password with new password |
 
 To use your own backend, update the URL in:
 `lib/data/urls.dart`

@@ -27,7 +27,7 @@ class NetworkCaller {
     try {
       Uri uri = Uri.parse(url);
       final Map<String, String> headers = {
-        'token': AuthController.accessToken ?? ''
+        'token': AuthController.accessToken ?? '',
       };
 
       _logRequest(url, null, headers);
@@ -65,14 +65,17 @@ class NetworkCaller {
     }
   }
 
-  static Future<NetworkResponse> postRequest({required String url, Map<String,
-      String>? body, bool isFromLogin = false}) async {
+  static Future<NetworkResponse> postRequest({
+    required String url,
+    Map<String, String>? body,
+    bool isFromLogin = false,
+  }) async {
     try {
       Uri uri = Uri.parse(url);
 
       final Map<String, String> headers = {
         'content-type': 'application/json',
-        'token': AuthController.accessToken ?? ''
+        'token': AuthController.accessToken ?? '',
       };
 
       _logRequest(url, body, headers);
@@ -116,26 +119,75 @@ class NetworkCaller {
     }
   }
 
-  static void _logRequest(String url, Map<String, String>? body, Map<String, String>? headers) {
-    debugPrint('================== REQUEST ========================\n'
-        'URL: $url\n'
-        'HEADERS: $headers\n'
-        'BODY: $body\n'
-        '=============================================');
+  static Future<NetworkResponse> postRequestWithoutAuth({
+    required String url,
+    Map<String, String>? body,
+  }) async {
+    try {
+      Uri uri = Uri.parse(url);
+
+      final Map<String, String> headers = {'content-type': 'application/json'};
+
+      _logRequest(url, body, headers);
+      Response response = await post(
+        uri,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      _logResponse(url, response);
+
+      if (response.statusCode == 200) {
+        final decodedJson = jsonDecode(response.body);
+        return NetworkResponse(
+          isSuccess: true,
+          statusCode: response.statusCode,
+          body: decodedJson,
+        );
+      } else {
+        final decodedJson = jsonDecode(response.body);
+        return NetworkResponse(
+          isSuccess: false,
+          statusCode: response.statusCode,
+          errorMessage: decodedJson['data'] ?? _defaultErrorMessage,
+        );
+      }
+    } catch (e) {
+      return NetworkResponse(
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  static void _logRequest(
+    String url,
+    Map<String, String>? body,
+    Map<String, String>? headers,
+  ) {
+    debugPrint(
+      '================== REQUEST ========================\n'
+      'URL: $url\n'
+      'HEADERS: $headers\n'
+      'BODY: $body\n'
+      '=============================================',
+    );
   }
 
   static void _logResponse(String url, Response response) {
-    debugPrint('=================== RESPONSE =======================\n'
-        'URL: $url\n'
-        'STATUS CODE: ${response.statusCode}\n'
-        'BODY: ${response.body}\n'
-        '=============================================');
+    debugPrint(
+      '=================== RESPONSE =======================\n'
+      'URL: $url\n'
+      'STATUS CODE: ${response.statusCode}\n'
+      'BODY: ${response.body}\n'
+      '=============================================',
+    );
   }
 
   static Future<void> _onUnAuthorize() async {
     await AuthController.clearData();
-    Navigator.of(TaskManager.navigator.currentContext!)
-        .pushNamedAndRemoveUntil(
-        SignInScreen.name, (predicate) => false);
+    Navigator.of(
+      TaskManager.navigator.currentContext!,
+    ).pushNamedAndRemoveUntil(SignInScreen.name, (predicate) => false);
   }
 }

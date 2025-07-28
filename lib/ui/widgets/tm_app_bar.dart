@@ -1,13 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/update_profile_screen.dart';
 
-class TMAppBar extends StatefulWidget implements PreferredSizeWidget{
-  const TMAppBar({
-    super.key,
-  });
+class TMAppBar extends StatefulWidget implements PreferredSizeWidget {
+  const TMAppBar({super.key});
 
   @override
   State<TMAppBar> createState() => _TMAppBarState();
@@ -25,14 +24,23 @@ class _TMAppBarState extends State<TMAppBar> {
         backgroundColor: Colors.green,
         title: Row(
           children: [
-            CircleAvatar(),
+            CircleAvatar(
+              backgroundImage:
+              AuthController.userModel?.photo == null
+                  ? null :
+              MemoryImage(
+                base64Decode(AuthController.userModel!.photo!),
+              ),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AuthController.userModel!.firstName+' '+AuthController.userModel!.lastName,
+                    AuthController.userModel!.firstName +
+                        ' ' +
+                        AuthController.userModel!.lastName,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
@@ -57,16 +65,19 @@ class _TMAppBarState extends State<TMAppBar> {
     );
   }
 
-  void _onTapLogoutButton()async{
+  void _onTapLogoutButton() async {
     await AuthController.clearData();
-    Navigator.pushNamedAndRemoveUntil(context, SignInScreen.name, (predicate)=>false);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      SignInScreen.name,
+      (predicate) => false,
+    );
   }
 
-  void _onTapProfileBar(){
-    if(ModalRoute.of(context)!.settings.name!=UpdateProfileScreen.name){
-       Navigator.pushNamed(context, UpdateProfileScreen.name);
+  void _onTapProfileBar() {
+    if (ModalRoute.of(context)!.settings.name != UpdateProfileScreen.name) {
+      Navigator.pushNamed(context, UpdateProfileScreen.name);
     }
     ;
   }
-
 }
