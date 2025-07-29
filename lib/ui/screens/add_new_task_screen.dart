@@ -6,7 +6,6 @@ import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dar
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snacksbar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
-
 import '../controllers/new_task_list_controller.dart';
 import '../controllers/task_status_count_controller.dart';
 
