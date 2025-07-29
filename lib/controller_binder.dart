@@ -11,6 +11,7 @@ class ControllerBinder extends Bindings{
     Get.put(NewTaskListController());
     Get.put(TaskStatusCountController());
     Get.put(CompleteTaskListController());
+    Get.put(CompleteTaskListController());
   }
 
 }
