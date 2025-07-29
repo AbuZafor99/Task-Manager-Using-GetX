@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../../data/models/task_model.dart';
 import '../../data/service/network_caller.dart';
 import '../../data/urls.dart';
