@@ -1,11 +1,14 @@
-
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/urls.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/add_new_task_controller.dart';
+import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snacksbar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
+
+import '../controllers/new_task_list_controller.dart';
+import '../controllers/task_status_count_controller.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -19,9 +22,9 @@ class AddNewTaskScreen extends StatefulWidget {
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
   final TextEditingController _descriptionTEController =
-  TextEditingController();
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _addNewTaskInProgress = false;
+  final AddNewTaskController _addNewTaskController = Get.find<AddNewTaskController>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(hintText: 'Title'),
+                  decoration: const InputDecoration(hintText: 'Title'),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -62,16 +65,20 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(hintText: 'Description'),
+                  decoration: const InputDecoration(hintText: 'Description'),
                 ),
                 const SizedBox(height: 16),
-                Visibility(
-                  visible: _addNewTaskInProgress == false,
-                  replacement: CenteredCircularProgressIndicator(),
-                  child: ElevatedButton(
-                    onPressed: _onTapSubmitButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
-                  ),
+                GetBuilder<AddNewTaskController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.inProgress == false,
+                      replacement: const CenteredCircularProgressIndicator(),
+                      child: ElevatedButton(
+                        onPressed: _onTapSubmitButton,
+                        child: const Icon(Icons.arrow_circle_right_outlined),
+                      ),
+                    );
+                  }
                 ),
               ],
             ),
@@ -88,29 +95,24 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   }
 
   Future<void> _addNewTask() async {
-    _addNewTaskInProgress = true;
-    setState(() {});
-
-    Map<String, String> requestBody = {
-      "title": _titleTEController.text.trim(),
-      "description": _descriptionTEController.text.trim(),
-      "status": "New",
-    };
-
-    NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.createNewTaskUrl,
-      body: requestBody,
+    final result = await _addNewTaskController.addNewTask(
+      _titleTEController.text.trim(),
+      _descriptionTEController.text.trim(),
     );
-
-    _addNewTaskInProgress = false;
-    setState(() {});
-
-    if (response.isSuccess) {
+    if (result) {
       _titleTEController.clear();
       _descriptionTEController.clear();
-      showSnackBarMessage(context, 'Added new task');
+      Get.find<NewTaskListController>().getNewTaskList();
+      Get.find<TaskStatusCountController>().getTaskStatusCountList();
+      Get.offAllNamed(MainNavBarHolderScreen.name);
+
+      if (mounted) {
+        showSnackBarMessage(context, 'New task has been added');
+      }
     } else {
-      showSnackBarMessage(context, response.errorMessage!);
+      if (mounted) {
+        showSnackBarMessage(context, _addNewTaskController.errorMessage!);
+      }
     }
   }
 
@@ -120,5 +122,4 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     _descriptionTEController.dispose();
     super.dispose();
   }
-
 }
