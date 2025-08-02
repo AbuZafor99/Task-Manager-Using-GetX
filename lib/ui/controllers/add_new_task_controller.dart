@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:task_manager/data/models/task_model.dart';
 import '../../data/service/network_caller.dart' show NetworkResponse, NetworkCaller;
 import '../../data/urls.dart';
-import '../widgets/snacksbar_message.dart';
 
 class AddNewTaskController extends GetxController{
   bool _inProgress=false;
