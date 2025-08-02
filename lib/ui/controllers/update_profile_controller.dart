@@ -10,7 +10,7 @@ class UpdateProfileController extends GetxController{
   bool get inProgress=>_InProgress;
   String? get errorMessage=>_errorMessage;
 
-  Future<bool> updateProfile(String email, String fName,String lName, String mobile,String pass,String image) async {
+  Future<bool> updateProfile(String email, String fName,String lName, String mobile,String pass,String? image) async {
     bool isSuccess=false;
     _InProgress = true;
     update();
