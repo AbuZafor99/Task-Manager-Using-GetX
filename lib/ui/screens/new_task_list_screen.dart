@@ -103,6 +103,6 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
 
 
   void _onTapNewTaskButton() {
-    Navigator.pushNamed(context, AddNewTaskScreen.name);
+    Get.offNamed(AddNewTaskScreen.name);
   }
 }

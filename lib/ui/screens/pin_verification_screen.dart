@@ -1,8 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
+import 'package:task_manager/ui/controllers/reset_pin_verification_controller.dart';
 import 'package:task_manager/ui/screens/change_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
@@ -20,17 +23,11 @@ class PinVerificationScreen extends StatefulWidget {
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   final TextEditingController _otpTEController = TextEditingController();
-  bool _isLoading = false;
-  String? _email;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _email = ModalRoute.of(context)?.settings.arguments as String?;
-  }
+  final ResetPinVerificationController resetPinVerificationController= Get.find<ResetPinVerificationController>();
 
   @override
   Widget build(BuildContext context) {
+    final String email = Get.arguments;
     return Scaffold(
       body: ScreenBackground(
         child: SingleChildScrollView(
@@ -50,10 +47,10 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     'A 6 digit verification pin has been sent to your \nemail address.',
                     style: TextStyle(color: Colors.grey),
                   ),
-                  if (_email != null) ...[
+                  if (email != null) ...[
                     SizedBox(height: 8),
                     Text(
-                      'Email: $_email',
+                      'Email: $email',
                       style: TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.w600,
@@ -80,13 +77,17 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     appContext: context,
                   ),
                   SizedBox(height: 20),
-                  Visibility(
-                    visible: !_isLoading,
-                    replacement: CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: _submitOnButtonClick,
-                      child: Text("Verify"),
-                    ),
+                  GetBuilder<ResetPinVerificationController>(
+                    builder: (controller) {
+                      return Visibility(
+                        visible: controller.isLoading==false,
+                        replacement: CenteredCircularProgressIndicator(),
+                        child: ElevatedButton(
+                          onPressed: () => _submitOnButtonClick(email),
+                          child: Text("Verify"),
+                        ),
+                      );
+                    }
                   ),
                   SizedBox(height: 15),
                   Center(
@@ -122,61 +123,33 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void _navigateToSignInPage() {
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      SignInScreen.name,
-      (predicate) => false,
-    );
+    Get.offAllNamed(SignInScreen.name);
   }
 
-  void _submitOnButtonClick() {
+  void _submitOnButtonClick(String email) {
     if (_otpTEController.text.length == 6) {
-      _verifyOTP();
+      _verifyOTP(email);
     } else {
       showSnackBarMessage(context, 'Please enter 6 digit OTP');
     }
   }
 
-  Future<void> _verifyOTP() async {
-    _isLoading = true;
-    setState(() {});
-
-    // Debug: Print the OTP verification details
-    debugPrint('OTP Verification Request:');
-    debugPrint(
-      'URL: ${Urls.recoverVerifyOTP(_email ?? "", _otpTEController.text)}',
-    );
-    debugPrint('Email: $_email');
-    debugPrint('OTP: ${_otpTEController.text}');
-
-    NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.recoverVerifyOTP(_email ?? "", _otpTEController.text),
-    );
-
-    _isLoading = false;
-    setState(() {});
-
-    // Debug: Print the OTP verification response
-    debugPrint('OTP Verification Response:');
-    debugPrint('Status Code: ${response.statusCode}');
-    debugPrint('Is Success: ${response.isSuccess}');
-    debugPrint('Error Message: ${response.errorMessage}');
-    debugPrint('Response Body: ${response.body}');
-
-    if (response.isSuccess) {
+  Future<void> _verifyOTP(String email) async {
+    final String otp=_otpTEController.text;
+    final bool isSuccess= await resetPinVerificationController.verifyOTP(email, otp);
+    if (isSuccess) {
       if (mounted) {
         showSnackBarMessage(context, 'OTP verified successfully!');
-        Navigator.pushReplacementNamed(
-          context,
-          ChangePasswordScreen.name,
-          arguments: {'email': _email, 'otp': _otpTEController.text},
-        );
+       Get.toNamed(ChangePasswordScreen.name, arguments: {
+         'email': email,
+         'otp': otp,
+       });
       }
     } else {
       if (mounted) {
         showSnackBarMessage(
           context,
-          response.errorMessage ?? 'Failed to verify OTP',
+          resetPinVerificationController.errorMessage ?? 'Failed to verify OTP',
         );
       }
     }

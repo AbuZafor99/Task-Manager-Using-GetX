@@ -128,7 +128,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     if (isSuccess) {
       if (mounted) {
         showSnackBarMessage(context, 'Recovery email sent successfully!');
-        Get.offAllNamed(PinVerificationScreen.name);
+        Get.toNamed(PinVerificationScreen.name, arguments: email);
       }
     } else {
       if (mounted) {
