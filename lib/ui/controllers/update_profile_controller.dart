@@ -1,24 +1,27 @@
 import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/auth_controller.dart';
 
+import '../../data/models/user_model.dart';
 import '../../data/service/network_caller.dart';
 import '../../data/urls.dart';
 
-class UpdateProfileController extends GetxController{
-  bool _InProgress=false;
+class UpdateProfileController extends GetxController {
+  bool _inProgress = false;
   String? _errorMessage;
 
-  bool get inProgress=>_InProgress;
-  String? get errorMessage=>_errorMessage;
+  bool get inProgress => _inProgress;
 
-  Future<bool> updateProfile(String email, String fName,String lName, String mobile,String pass,String? image) async {
-    bool isSuccess=false;
-    _InProgress = true;
+  String? get errorMessage => _errorMessage;
+
+  Future<bool> updateProfile(String email, String fName, String lName,
+      String mobile, String pass, String? image) async {
+    bool isSuccess = false;
+    _inProgress = true;
     update();
-
 
     Map<String, String> requestBody = {
       "email": email,
-      "firstName":fName,
+      "firstName": fName,
       "lastName": lName,
       "mobile": mobile,
     };
@@ -34,12 +37,18 @@ class UpdateProfileController extends GetxController{
       body: requestBody,
     );
 
-    _InProgress = false;
+    _inProgress = false;
     update();
     if (response.isSuccess) {
-      isSuccess=true;
-    }else{
-      _errorMessage=response.errorMessage;
+      UserModel userModel = AuthController.userModel!;
+      userModel.email=email;
+      userModel.firstName=fName;
+      userModel.lastName=lName;
+      userModel.mobile=mobile;
+      AuthController.saveUserData(userModel, AuthController.accessToken!);
+      isSuccess = true;
+    } else {
+      _errorMessage = response.errorMessage;
     }
     return isSuccess;
   }
