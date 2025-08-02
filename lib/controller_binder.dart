@@ -5,8 +5,12 @@ import 'package:task_manager/ui/controllers/complete_task_List_controller.dart';
 import 'package:task_manager/ui/controllers/new_task_list_controller.dart';
 import 'package:task_manager/ui/controllers/progress_task_list_controller.dart';
 import 'package:task_manager/ui/controllers/reset_password_controller.dart';
+import 'package:task_manager/ui/controllers/reset_pin_verification_controller.dart';
+import 'package:task_manager/ui/controllers/send_recovery_email_controller.dart';
 import 'package:task_manager/ui/controllers/sign_in_controller.dart';
+import 'package:task_manager/ui/controllers/sign_up_controller.dart';
 import 'package:task_manager/ui/controllers/task_status_count_controller.dart';
+import 'package:task_manager/ui/controllers/update_profile_controller.dart';
 
 class ControllerBinder extends Bindings{
   @override
@@ -20,6 +24,10 @@ class ControllerBinder extends Bindings{
     Get.put(CanceledTaskListController());
     Get.put(ProgressTaskListController());
     Get.put(ResetPasswordController());
+    Get.put(SendRecoveryEmailController());
+    Get.put(ResetPinVerificationController());
+    Get.put(SignUpController());
+    Get.put(UpdateProfileController());
   }
 
 }

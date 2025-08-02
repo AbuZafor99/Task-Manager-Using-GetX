@@ -1,8 +1,11 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
+import 'package:task_manager/ui/controllers/send_recovery_email_controller.dart';
 import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
@@ -23,7 +26,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailForVerificationController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  final SendRecoveryEmailController recoveryEmailController=Get.find<SendRecoveryEmailController>();
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +66,17 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  Visibility(
-                    visible: !_isLoading,
-                    replacement: CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: _emailSubmitOnButtonClick,
-                      child: Icon(Icons.arrow_circle_right_outlined),
-                    ),
+                  GetBuilder<SendRecoveryEmailController>(
+                    builder: (controller) {
+                      return Visibility(
+                        visible: controller.isLoading==false,
+                        replacement: CenteredCircularProgressIndicator(),
+                        child: ElevatedButton(
+                          onPressed: _emailSubmitOnButtonClick,
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      );
+                    }
                   ),
                   SizedBox(height: 15),
                   Center(
@@ -105,7 +112,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _navigateToSignInPage() {
-    Navigator.pushReplacementNamed(context, SignInScreen.name);
+    Get.offAllNamed(SignInScreen.name);
   }
 
   void _emailSubmitOnButtonClick() {
@@ -115,32 +122,19 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   Future<void> _sendRecoveryEmail() async {
-    _isLoading = true;
-    setState(() {});
-
     final String email = _emailForVerificationController.text.trim();
+    final bool isSuccess= await recoveryEmailController.sendRecoveryEmail(email);
 
-    NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.recoverVerifyEmail(email),
-    );
-
-    _isLoading = false;
-    setState(() {});
-
-    if (response.isSuccess) {
+    if (isSuccess) {
       if (mounted) {
         showSnackBarMessage(context, 'Recovery email sent successfully!');
-        Navigator.pushReplacementNamed(
-          context,
-          PinVerificationScreen.name,
-          arguments: email,
-        );
+        Get.toNamed(PinVerificationScreen.name, arguments: email);
       }
     } else {
       if (mounted) {
         showSnackBarMessage(
           context,
-          response.errorMessage ?? 'Failed to send recovery email',
+          recoveryEmailController.errorMessage ?? 'Failed to send recovery email',
         );
       }
     }

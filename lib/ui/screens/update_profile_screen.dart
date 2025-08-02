@@ -2,9 +2,15 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:task_manager/ui/controllers/update_profile_controller.dart';
+import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
+import 'package:task_manager/ui/screens/new_task_list_screen.dart';
+import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/snacksbar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
@@ -30,8 +36,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ImagePicker imagePicker = ImagePicker();
+  final UpdateProfileController updateProfileController= Get.find<UpdateProfileController>();
   XFile? _selectedImage;
-  bool _updateProfileInProgress = false;
 
   @override
   void initState() {
@@ -129,13 +135,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  Visibility(
-                    visible: _updateProfileInProgress == false,
-                    replacement: CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: _onTapSignUpButton,
-                      child: Icon(Icons.arrow_circle_right_outlined),
-                    ),
+                  GetBuilder<UpdateProfileController>(
+                    builder: (controller) {
+                      return Visibility(
+                        visible: controller.inProgress == false,
+                        replacement: CenteredCircularProgressIndicator(),
+                        child: ElevatedButton(
+                          onPressed: _onTapSignUpButton,
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      );
+                    }
                   ),
                 ],
               ),
@@ -206,51 +216,33 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    _updateProfileInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
     Uint8List? imageBytes;
 
-    Map<String, String> requestBody = {
-      "email": _emailTEController.text,
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _phoneNumberTEController.text.trim(),
-    };
-    if (_passwordTEController.text.isNotEmpty) {
-      requestBody['password'] = _passwordTEController.text;
-    }
-    if (_selectedImage != null) {
-      imageBytes = await _selectedImage!.readAsBytes();
-      requestBody['photo'] = base64Encode(imageBytes);
-    }
+    String email= _emailTEController.text;
+    String fName= _firstNameTEController.text.trim();
+    String lName= _lastNameTEController.text.trim();
+    String mobile= _phoneNumberTEController.text.trim();
+    String pass = _passwordTEController.text;
+    imageBytes = await _selectedImage!.readAsBytes();
+    String photo = base64Encode(imageBytes);
 
-    NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.updateProfile,
-      body: requestBody,
-    );
+    final bool isSuccess= await updateProfileController.updateProfile(email, fName, lName, mobile, pass, photo);
 
-    _updateProfileInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
+    if (isSuccess) {
       _passwordTEController.clear();
-
       if (mounted) {
         showSnackBarMessage(context, "Profile Updated");
+        Get.back();
       }
     } else {
       if (mounted) {
-        showSnackBarMessage(context, response.errorMessage!);
+        showSnackBarMessage(context, updateProfileController.errorMessage!);
       }
     }
   }
 
   void _onTapSignInButton() {
-    Navigator.pop(context);
+    Get.offNamed(SignUpScreen.name);
   }
 
   @override
