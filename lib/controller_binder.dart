@@ -10,6 +10,7 @@ import 'package:task_manager/ui/controllers/send_recovery_email_controller.dart'
 import 'package:task_manager/ui/controllers/sign_in_controller.dart';
 import 'package:task_manager/ui/controllers/sign_up_controller.dart';
 import 'package:task_manager/ui/controllers/task_status_count_controller.dart';
+import 'package:task_manager/ui/controllers/update_profile_controller.dart';
 
 class ControllerBinder extends Bindings{
   @override
@@ -26,6 +27,7 @@ class ControllerBinder extends Bindings{
     Get.put(SendRecoveryEmailController());
     Get.put(ResetPinVerificationController());
     Get.put(SignUpController());
+    Get.put(UpdateProfileController());
   }
 
 }
