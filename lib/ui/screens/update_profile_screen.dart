@@ -223,8 +223,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     String lName= _lastNameTEController.text.trim();
     String mobile= _phoneNumberTEController.text.trim();
     String pass = _passwordTEController.text;
-    imageBytes = await _selectedImage!.readAsBytes();
-    String photo = base64Encode(imageBytes);
+    // if(_selectedImage!=null){
+    //   imageBytes = await _selectedImage!.readAsBytes();
+    //   String? photo = base64Encode(imageBytes);
+    // }
+    String? photo;
+    if (_selectedImage != null) {
+      imageBytes = await _selectedImage!.readAsBytes();
+      photo = base64Encode(imageBytes);
+    }
 
     final bool isSuccess= await updateProfileController.updateProfile(email, fName, lName, mobile, pass, photo);
 
