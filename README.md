@@ -148,13 +148,3 @@ GitHub: [@AbuZafor99](https://github.com/AbuZafor99)
 
 ```
 
----
-
-Let me know if you want:
-- A downloadable `.md` file  
-- A version with **badges** (like Flutter version, MIT license, GitHub stars, etc.)  
-- GitHub Actions integration  
-- Auto-generated screenshots/mockups  
-
-Happy coding! 🚀
-```
